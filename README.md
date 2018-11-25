@@ -1,101 +1,71 @@
+[//]: # (Image References)
+
+[image1]: ./misc_images/forward_kinematics_1.png
+[image2]: ./misc_images/dh_parameter_analysis.png
+
 [![Udacity - Robotics NanoDegree Program](https://s3-us-west-1.amazonaws.com/udacity-robotics/Extra+Images/RoboND_flag.png)](https://www.udacity.com/robotics)
-# Robotic arm - Pick & Place project
+# Robotic arm - Pick & Place project Solution
 
-Make sure you are using robo-nd VM or have Ubuntu+ROS installed locally.
+For detailed steps for setting up the environment, please [see](https://github.com/udacity/RoboND-Kinematics-Project/blob/master/README.md)
+### Kinematic Analysis
+#### 1. Deriving DH parameters using the forward_kinematics demo and kr210.urdf.xacro file
+Here is the image of link reference frames for kr210 in URDF convention:
+![alt text][image1]
 
-### One time Gazebo setup step:
-Check the version of gazebo installed on your system using a terminal:
-```sh
-$ gazebo --version
+Here is the simplified diagram of arm joints, using DH convention:
+![alt text][image2]
+
+The unknown DH parameters from above image can be found by analyzing the URDF joint origins, from kr210.urdf.xacro file and then verified against the output of tf_echo.
+##### DH parameter a1
+DH parameter a1 is the distance between joint_1 and joint_2 along world x-axis i.e. 0.35.
 ```
-To run projects from this repository you need version 7.7.0+
-If your gazebo version is not 7.7.0+, perform the update as follows:
-```sh
-$ sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list'
-$ wget http://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -
-$ sudo apt-get update
-$ sudo apt-get install gazebo7
+robond@udacity:~/catkin_ws/src/RoboND-Kinematics-Project$ rosrun tf tf_echo link_1 link_2
+At time 1543184980.155
+- Translation: [0.350, 0.000, 0.420]
 ```
-
-Once again check if the correct version was installed:
-```sh
-$ gazebo --version
+##### DH parameter d1
+DH parameter d1 is the distance between base_link origin and joint_2 along world z-axis i.e. 0.75.
 ```
-### For the rest of this setup, catkin_ws is the name of active ROS Workspace, if your workspace name is different, change the commands accordingly
-
-If you do not have an active ROS workspace, you can create one by:
-```sh
-$ mkdir -p ~/catkin_ws/src
-$ cd ~/catkin_ws/
-$ catkin_make
+robond@udacity:~/catkin_ws/src/RoboND-Kinematics-Project$ rosrun tf tf_echo base_link link_2
+At time 1543185367.054
+- Translation: [0.350, 0.000, 0.750]
 ```
-
-Now that you have a workspace, clone or download this repo into the **src** directory of your workspace:
-```sh
-$ cd ~/catkin_ws/src
-$ git clone https://github.com/udacity/RoboND-Kinematics-Project.git
+##### DH parameter a2
+DH parameter a2 is the distance between joint_2 and joint_3 along world z-axis i.e. 1.25.
 ```
-
-Now from a terminal window:
-
-```sh
-$ cd ~/catkin_ws
-$ rosdep install --from-paths src --ignore-src --rosdistro=kinetic -y
-$ cd ~/catkin_ws/src/RoboND-Kinematics-Project/kuka_arm/scripts
-$ sudo chmod +x target_spawn.py
-$ sudo chmod +x IK_server.py
-$ sudo chmod +x safe_spawner.sh
+robond@udacity:~/catkin_ws/src/RoboND-Kinematics-Project$ rosrun tf tf_echo link_2 link_3
+At time 1543185661.854
+- Translation: [0.000, 0.000, 1.250]
 ```
-Build the project:
-```sh
-$ cd ~/catkin_ws
-$ catkin_make
+##### DH parameter a3
+DH parameter a3 is the distance between joint_3 and joint_5 (wrist center) along world z-axis i.e. -0.054.
 ```
-
-Add following to your .bashrc file
+robond@udacity:~/catkin_ws/src/RoboND-Kinematics-Project$ rosrun tf tf_echo link_3 link_5
+At time 1543186229.655
+- Translation: [1.500, 0.000, -0.054]
 ```
-export GAZEBO_MODEL_PATH=~/catkin_ws/src/RoboND-Kinematics-Project/kuka_arm/models
-
-source ~/catkin_ws/devel/setup.bash
+##### DH parameter d4
+DH parameter a3 is the distance between joint_3 and joint_5 (wrist center) along world x-axis i.e. 1.5.
 ```
-
-For demo mode make sure the **demo** flag is set to _"true"_ in `inverse_kinematics.launch` file under /RoboND-Kinematics-Project/kuka_arm/launch
-
-In addition, you can also control the spawn location of the target object in the shelf. To do this, modify the **spawn_location** argument in `target_description.launch` file under /RoboND-Kinematics-Project/kuka_arm/launch. 0-9 are valid values for spawn_location with 0 being random mode.
-
-You can launch the project by
-```sh
-$ cd ~/catkin_ws/src/RoboND-Kinematics-Project/kuka_arm/scripts
-$ ./safe_spawner.sh
+robond@udacity:~/catkin_ws/src/RoboND-Kinematics-Project$ rosrun tf tf_echo link_3 link_5
+At time 1543186229.655
+- Translation: [1.500, 0.000, -0.054]
 ```
-
-If you are running in demo mode, this is all you need. To run your own Inverse Kinematics code change the **demo** flag described above to _"false"_ and run your code (once the project has successfully loaded) by:
-```sh
-$ cd ~/catkin_ws/src/RoboND-Kinematics-Project/kuka_arm/scripts
-$ rosrun kuka_arm IK_server.py
+##### DH parameter dg/d7
+DH parameter dg or d7 is the distance between joint_5 (wrist center) and gripper_joint along world x-axis i.e. 0.303
 ```
-Once Gazebo and rviz are up and running, make sure you see following in the gazebo world:
-
-	- Robot
-	
-	- Shelf
-	
-	- Blue cylindrical target in one of the shelves
-	
-	- Dropbox right next to the robot
-	
-
-If any of these items are missing, report as an issue.
-
-Once all these items are confirmed, open rviz window, hit Next button.
-
-To view the complete demo keep hitting Next after previous action is completed successfully. 
-
-Since debugging is enabled, you should be able to see diagnostic output on various terminals that have popped up.
-
-The demo ends when the robot arm reaches at the top of the drop location. 
-
-There is no loopback implemented yet, so you need to close all the terminal windows in order to restart.
-
-In case the demo fails, close all three terminal windows and rerun the script.
-
+robond@udacity:~/catkin_ws/src/RoboND-Kinematics-Project$ rosrun tf tf_echo link_5 gripper_link
+At time 1543186439.355
+- Translation: [0.303, 0.000, 0.000]
+```
+Here's the DH table defined in code:
+```python
+ # DH Parameters
+        DH = { alpha0:      0,  a0:      0,  d1:   0.75,  q1:  q1,
+               alpha1:  -pi/2,  a1:   0.35,  d2:      0,  q2:  q2-pi/2,
+               alpha2:      0,  a2:   1.25,  d3:      0,  q3:  q3,
+               alpha3:  -pi/2,  a3: -0.054,  d4:    1.5,  q4:  q4,
+               alpha4:   pi/2,  a4:      0,  d5:      0,  q5:  q5,
+               alpha5:  -pi/2,  a5:      0,  d6:      0,  q6:  q6,
+               alpha6:      0,  a6:      0,  d7:  0.303,  q7:  0}
+```
