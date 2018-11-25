@@ -18,38 +18,20 @@ from geometry_msgs.msg import Pose
 from mpmath import *
 from sympy import *
 
+### Function for extracting a small matrix from large one
 def submatrix( matrix, startRow, startCol, size):
     return matrix[startRow:startRow+size,startCol:startCol+size]
 
-### Creates Homogeneous Transform Matrix from DH parameters
+### Generic function for creating Homogenous Transform Matrix
 def homogeneous_transform(q, d, a, alpha):
-    T = Matrix([[            cos(q),           -sin(q),           0,             a],
-                [ sin(q)*cos(alpha), cos(q)*cos(alpha), -sin(alpha), -sin(alpha)*d],
-                [ sin(q)*sin(alpha), cos(q)*sin(alpha),  cos(alpha),  cos(alpha)*d],
-                [                 0,                 0,           0,             1]])
-    return T
-
+    Transform = Matrix([[            cos(q),           -sin(q),           0,             a],
+                        [ sin(q)*cos(alpha), cos(q)*cos(alpha), -sin(alpha), -sin(alpha)*d],
+                        [ sin(q)*sin(alpha), cos(q)*sin(alpha),  cos(alpha),  cos(alpha)*d],
+                        [                 0,                 0,           0,             1]])
+    return Transform
 
 class RobotTransform:
     def init(self):
-        ### Your FK code here
-        # Create symbols
-	#
-	#
-	# Create Modified DH parameters
-	#
-	#
-	# Define Modified DH Transformation matrix
-	#
-	#
-	# Create individual transformation matrices
-	#
-	#
-	# Extract rotation matrices from the transformation matrices
-	#
-	#
-        ###
-
 	### Create symbols for joint variables
         q1, q2, q3, q4, q5, q6, q7 = symbols('q1:8') # theta_i
         d1, d2, d3, d4, d5, d6, d7 = symbols('d1:8') 
@@ -59,14 +41,14 @@ class RobotTransform:
         ### Kuka KR210 ###
         # DH Parameters
         DH = { alpha0:      0,  a0:      0,  d1:   0.75,  q1:  q1,
-              alpha1:  -pi/2,  a1:   0.35,  d2:      0,  q2:  q2-pi/2,  
-              alpha2:      0,  a2:   1.25,  d3:      0,  q3:  q3,
-              alpha3:  -pi/2,  a3: -0.054,  d4:    1.5,  q4:  q4,
-              alpha4:   pi/2,  a4:      0,  d5:      0,  q5:  q5,
-              alpha5:  -pi/2,  a5:      0,  d6:      0,  q6:  q6,
-              alpha6:      0,  a6:      0,  d7:  0.303,  q7: 0}
+               alpha1:  -pi/2,  a1:   0.35,  d2:      0,  q2:  q2-pi/2,  
+               alpha2:      0,  a2:   1.25,  d3:      0,  q3:  q3,
+               alpha3:  -pi/2,  a3: -0.054,  d4:    1.5,  q4:  q4,
+               alpha4:   pi/2,  a4:      0,  d5:      0,  q5:  q5,
+               alpha5:  -pi/2,  a5:      0,  d6:      0,  q6:  q6,
+               alpha6:      0,  a6:      0,  d7:  0.303,  q7:  0}
         
-        # Homogenous transforms
+        # Homogenous transforms for individual joints
         T0_1 = homogeneous_transform(q1, d1, a0, alpha0).subs(DH)
         T1_2 = homogeneous_transform(q2, d2, a1, alpha1).subs(DH)
         T2_3 = homogeneous_transform(q3, d3, a2, alpha2).subs(DH)
@@ -77,8 +59,10 @@ class RobotTransform:
         
         print("Computed individual transforms")
         
-        # Composition of Homogeneous Transforms
-        T0_3 = simplify(T0_1 * T1_2 * T2_3) # base_link to link_2
+        # Composition of Homogeneous Transforms from base link to link_3
+        T0_3 = simplify(T0_1 * T1_2 * T2_3)
+        # Extract 3x3 Rotation matrix from Homogeneous Transform matrix for
+        # base_link to link_3
         self.R0_3 = submatrix(T0_3, 0 , 0, 3)
         
         print("Computed composition of transforms")
@@ -138,10 +122,13 @@ def handle_calculate_IK(req):
 	    #
             Rrpy = robotTransform.getGripperOrientation(roll, pitch, yaw)
             
+            # End-effector position
             EE = Matrix([[px],
                          [py],
                          [pz]])
 
+            # Calculating wrist-center position. 0.303 is the distance between
+            # origin of end-effector and origin of wrist-center
             WC = EE - 0.303 * Rrpy[:,2]
 
 	    #
