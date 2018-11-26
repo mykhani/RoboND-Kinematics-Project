@@ -99,13 +99,12 @@ T6_G = homogeneous_transform(q7, d7, a6, alpha6).subs(DH)
 The important point to consider here is that the gripper pose is given in URDF convention while base_link to gripper_link homogeneous transform is based on DH convention. The two convention differ in their orientation as visible from the figure below:
 ![alt text][image4]
 As mentioned in the lectures, the URDF frame can be converted to DH convention based frame, by first rotating the gripper (intrinsic rotation) orientation by 180 degrees around z-axis, followed by -90 degrees rotation around y-axis. Gripper pose consists of x,y,z positions and roll, pitch, yaw angles. The rotation matrix for the orientation of gripper can be calculated following a sequence of extrinsic rotations i.e.
-To generate
 ```python
 R_EE = Rot(z, yaw) * Rot(y, pitch) * Rot(x, roll) # Rotation matrix for end effector orientation
 # The correction matrix to align URDF and DH orientation
 R_corr = Rot(z, pi) * Rot(y, -pi/2)
-R0_G = R_EE * R_corr
-# The general form of Homogeneous Transform is
+R0_G = R_EE * R_corr # Rotation matrix from base_link to gripper_link
+# The general form of Homogeneous Transform from base_link to gripper_link is
 T0_G = Matrix([[r11, r12, r13, x]
                [r21, r22, r23, y]
                [r31, r32, r33, z]
