@@ -4,6 +4,8 @@
 [image2]: ./misc_images/dh_parameter_analysis.png
 [image3]: ./misc_images/dh_transform_matrix.png
 [image4]: ./misc_images/dh_vs_urdf_orientation.png
+[image5]: ./misc_images/dh_vs_urdf_orientation.png
+[image6]: ./misc_images/theta_calculation2.png
 
 [![Udacity - Robotics NanoDegree Program](https://s3-us-west-1.amazonaws.com/udacity-robotics/Extra+Images/RoboND_flag.png)](https://www.udacity.com/robotics)
 # Robotic arm - Pick & Place project Solution
@@ -111,3 +113,11 @@ T0_G = Matrix([[r11, r12, r13, x]
                [  0,   0,   0, 1]])
 # where r11, r12 etc are the elements of R0_G Rotation matrix and x, y, and z are gripper pose locations.
 ```
+#### 3. Inverse kinematics
+The problem of finding the joint angles can be simplified by breaking down the desired gripper pose in 2 steps: 
+1. The location of wrist center is determined from gripper pose. The wrist center position is used to rotate joints 1, 2 and 3.
+2. Once the desired wrist center location is achieved, orientation is adjusted to match the desired gripper orientation. Orientation thus is controlled by joints 4, 5 and 6, with joint 5 acting as the wrist center.
+##### Determining the location of wrist center and angles for joints 1, 2 and 3
+###### Calculating theta2 and theta3
+![alt text][image6]
+##### Determining the required rotation for joints 4, 5 and 6
