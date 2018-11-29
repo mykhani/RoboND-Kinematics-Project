@@ -4,7 +4,7 @@
 [image2]: ./misc_images/dh_parameter_analysis.png
 [image3]: ./misc_images/dh_transform_matrix.png
 [image4]: ./misc_images/dh_vs_urdf_orientation.png
-[image5]: ./misc_images/dh_vs_urdf_orientation.png
+[image5]: ./misc_images/theta_calculation1.png
 [image6]: ./misc_images/theta_calculation2.png
 
 [![Udacity - Robotics NanoDegree Program](https://s3-us-west-1.amazonaws.com/udacity-robotics/Extra+Images/RoboND_flag.png)](https://www.udacity.com/robotics)
