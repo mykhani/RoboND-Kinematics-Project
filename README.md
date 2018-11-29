@@ -118,6 +118,9 @@ The problem of finding the joint angles can be simplified by breaking down the d
 1. The location of wrist center is determined from gripper pose. The wrist center position is used to rotate joints 1, 2 and 3.
 2. Once the desired wrist center location is achieved, orientation is adjusted to match the desired gripper orientation. Orientation thus is controlled by joints 4, 5 and 6, with joint 5 acting as the wrist center.
 ##### Determining the location of wrist center and angles for joints 1, 2 and 3
+###### Calculating WC
+###### Calculating theta1
+![alt text][image5]
 ###### Calculating theta2 and theta3
 ![alt text][image6]
 ##### Determining the required rotation for joints 4, 5 and 6
