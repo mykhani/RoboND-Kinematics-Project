@@ -6,6 +6,7 @@
 [image4]: ./misc_images/dh_vs_urdf_orientation.png
 [image5]: ./misc_images/theta_calculation1.png
 [image6]: ./misc_images/theta_calculation2.png
+[image7]: ./misc_images/wrist_center_calculation.png
 
 [![Udacity - Robotics NanoDegree Program](https://s3-us-west-1.amazonaws.com/udacity-robotics/Extra+Images/RoboND_flag.png)](https://www.udacity.com/robotics)
 # Robotic arm - Pick & Place project Solution
@@ -119,6 +120,9 @@ The problem of finding the joint angles can be simplified by breaking down the d
 2. Once the desired wrist center location is achieved, orientation is adjusted to match the desired gripper orientation. Orientation thus is controlled by joints 4, 5 and 6, with joint 5 acting as the wrist center.
 ##### Determining the location of wrist center and angles for joints 1, 2 and 3
 ###### Calculating WC
+Below is the equation for calculating the wrist center position.   
+![alt text][image7]
+The point to note is that the gripper reference frame and joint6 frame, both have the same orientation in DH coordinate system. The origin of gripper lies at distance "d", along the z-axis of joint6 reference frame in DH coordinates system. If we subtract "d" from gripper position along the z-axis of gripper frame, we get the wrist center position. Note that we need to account for the difference in orientation of gripper frame in DH and URDF convention and hence apply the required correction before calculating the wrist center position.
 ###### Calculating theta1
 ![alt text][image5]
 ###### Calculating theta2 and theta3
