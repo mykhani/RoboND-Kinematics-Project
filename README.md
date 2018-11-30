@@ -132,6 +132,25 @@ The point to note is that the gripper reference frame and joint6 frame, both hav
 ##### Determining the required rotation for joints 4, 5 and 6
 Below is the equation for determining the rotation matrix for the orientation of joint 4,5 and 6.
 ![alt text][image8]
-The values of theta 1,2 and 3 as calculated earlier as used to compute transform from frame 0 to 3. The rotation matrix from frame 0 to 6 is the orientation of gripper frame after correction. After the rotation matrix from frame 3 to 6 is calculated, the euler angles are then extracted from the rotation matrix using formulas.
+The values of theta 1,2 and 3 as calculated earlier are used to compute transform from frame 0 to 3. The rotation matrix from frame 0 to 6 is the orientation of gripper frame after correction. After the rotation matrix from frame 3 to 6 is calculated, the euler angles are then extracted from the rotation matrix using below formulas. Below is the Rotation matrix from frame 3 to 6 extracted from Homogeneous transform from frame 3 to 6.
+```python
+R3_6 = Matrix([
+       [-sin(q4)*sin(q6) + cos(q4)*cos(q5)*cos(q6), -sin(q4)*cos(q6) - sin(q6)*cos(q4)*cos(q5), -sin(q5)*cos(q4)],
+       [                           sin(q5)*cos(q6),                           -sin(q5)*sin(q6),          cos(q5)],
+       [-sin(q4)*cos(q5)*cos(q6) - sin(q6)*cos(q4),  sin(q4)*sin(q6)*cos(q5) - cos(q4)*cos(q6),  sin(q4)*sin(q5)]])
+       
+# R3_6[2][2] / R3_6[0][2] = sin(q4)*sin(q5) / -sin(q5)*cos(q4) = sin(q4) / -cos(q4)
+# -R3_6[2][2] / R3_6[0][2] = sin(q4) / cos(q4) = tan(q4)
+# Hence q4 = arctan2(R3_6[2][2] / -R3_6[0][2]
+# R3_6[0][2] * R3_6[0][2] = sin^2(q5)*cos^2(q4)
+# R3_6[2][2] * R3_6[2][2] = sin^2(q4)*sin^2(q5)
+# R3_6[0][2] * R3_6[0][2] + R3_6[2][2] * R3_6[2][2] = sin^2(q5)*cos^2(q4) + sin^2(q4)*sin^2(q5) = sin^2(q5)(cos^2(q4) + sin^2(q4))
+# R3_6[0][2] * R3_6[0][2] + R3_6[2][2] * R3_6[2][2] = sin^2(q5)(1) = sin^2(q5)
+# sqrt(R3_6[0][2] * R3_6[0][2] + R3_6[2][2] * R3_6[2][2]) = sin(q5)
+# sqrt(R3_6[0][2] * R3_6[0][2] + R3_6[2][2] * R3_6[2][2]) / R3_6[1][2] =  sin(q5) / cos(q5)
+# q5 = arctan2(sqrt(R3_6[0][2] * R3_6[0][2] + R3_6[2][2] * R3_6[2][2]) / R3_6[1][2])
+# R3_6[1][1] / R3_6[1][0] = -sin(q5)*sin(q6) / sin(q5)*cos(q6) = -sin(q6) / cos(q6) = -tan(q6)
+# q6 = arctan2(-R3_6[1][1] / R3_6[1][0])
+```
 #### 3. Final result
 ![alt text][image9]
