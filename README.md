@@ -8,6 +8,7 @@
 [image6]: ./misc_images/theta_calculation2.png
 [image7]: ./misc_images/wrist_center_calculation.png
 [image8]: ./misc_images/orientation_gripper.png
+[image9]: ./misc_images/final_result.png
 
 [![Udacity - Robotics NanoDegree Program](https://s3-us-west-1.amazonaws.com/udacity-robotics/Extra+Images/RoboND_flag.png)](https://www.udacity.com/robotics)
 # Robotic arm - Pick & Place project Solution
@@ -132,3 +133,5 @@ The point to note is that the gripper reference frame and joint6 frame, both hav
 Below is the equation for determining the rotation matrix for the orientation of joint 4,5 and 6.
 ![alt text][image8]
 The values of theta 1,2 and 3 as calculated earlier as used to compute transform from frame 0 to 3. The rotation matrix from frame 0 to 6 is the orientation of gripper frame after correction. After the rotation matrix from frame 3 to 6 is calculated, the euler angles are then extracted from the rotation matrix using formulas.
+#### 3. Final result
+![alt text][image9]
