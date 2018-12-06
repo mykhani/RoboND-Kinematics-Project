@@ -152,5 +152,16 @@ R3_6 = Matrix([
 # R3_6[1][1] / R3_6[1][0] = -sin(q5)*sin(q6) / sin(q5)*cos(q6) = -sin(q6) / cos(q6) = -tan(q6)
 # q6 = arctan2(-R3_6[1][1] / R3_6[1][0])
 ```
-#### 3. Final result
+#### 3. Results
+1. Below is the picture of robotic arm succesfully picking and placing the cylinder objects.
 ![alt text][image9]
+2. The demo was run 10 times and it successfully picked the object at all the times.
+3. The most time consuming operation was the computation of transform matrices. To speed up the inverse kinematics calculations, these transform matrices were computed only once, at the start of IK_server.py and the results were then used by encapsulating the required functions in a python class RobotTransform. These greatly sped up the process of calculating inverse kinematics, as compared to the initial approach of performing calculations after each request to IK solver service.
+4. The one anamoly noticed, was that of calculating the inverse of transform matric from origin to joint 3 frame i.e. R0_3. The suggested code below failed to worked as expected.
+```python
+R3_6 = R0_3.inv("LU") * R_EE
+```
+This can be attributed to numerical solution errors while making the calculations. After searching on the web, I discovered that due to the orthonormal properties of Rotation matrix, the inverse can be computed by simply taking the transpose. Hence, it was successfully calculated as given below
+```python
+R3_6 = R_WC.T * Rrpy
+```
