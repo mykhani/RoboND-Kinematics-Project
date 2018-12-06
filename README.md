@@ -163,5 +163,5 @@ R3_6 = R0_3.inv("LU") * R_EE
 ```
 This can be attributed to numerical solution errors while making the calculations. After searching on the web, I discovered that due to the orthonormal properties of Rotation matrix, the inverse can be computed by simply taking the transpose. Hence, it was successfully calculated as given below
 ```python
-R3_6 = R0_3.T * Rrpy
+R3_6 = R0_3.T * R_EE
 ```
